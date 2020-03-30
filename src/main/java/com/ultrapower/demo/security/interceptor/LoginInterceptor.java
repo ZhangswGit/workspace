@@ -28,23 +28,23 @@ public class LoginInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		// String uri = request.get
-		String jwtheader = request.getHeader("Authorization");
-		if (jwtheader != null && !"".equals(jwtheader)) {
-			String PAYLOAD = jwtheader.split("\\.")[1];
-			String base64Decode = Base64.decodebase(PAYLOAD);
-			JSONObject json = JSON.parseObject(base64Decode);
-			String iss = (String) json.get("iss");
-//			log.info("AK:"+iss+"  SK:"+MsaUtil.getSk(iss));
-			Claims s = JWTHelper.parserTokens(jwtheader, MsaUtil.getSk(iss));
-			if (s != null) {
-//				log.info("s:"+s.toString());
-				return true;
-			}
-			log.info("-----jwt过期-------");
-		}
-		response.sendRedirect(zuulAdress+"/tsso/login");
-		return false;
+//		// String uri = request.get
+//		String jwtheader = request.getHeader("Authorization");
+//		if (jwtheader != null && !"".equals(jwtheader)) {
+//			String PAYLOAD = jwtheader.split("\\.")[1];
+//			String base64Decode = Base64.decodebase(PAYLOAD);
+//			JSONObject json = JSON.parseObject(base64Decode);
+//			String iss = (String) json.get("iss");
+////			log.info("AK:"+iss+"  SK:"+MsaUtil.getSk(iss));
+//			Claims s = JWTHelper.parserTokens(jwtheader, MsaUtil.getSk(iss));
+//			if (s != null) {
+////				log.info("s:"+s.toString());
+//				return true;
+//			}
+//			log.info("-----jwt过期-------");
+//		}
+//		response.sendRedirect(zuulAdress+"/tsso/login");
+		return true;
 	}
 
 	@Override
