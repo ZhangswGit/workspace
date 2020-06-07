@@ -1,0 +1,54 @@
+package com.ultrapower.demo.controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ultrapower.msa.sdk.jwt.JWTHelper;
+import com.ultrapower.msa.sdk.util.AESEncode_Decode_Util;
+import com.ultrapower.msa.sdk.util.Base64;
+import com.ultrapower.msa.sdk.util.MsaUtil;
+
+import io.jsonwebtoken.Claims;
+
+@Controller
+@Component
+public class LoginController {
+
+	@Value("${zuul.adress}")
+	private String zuulAdress;
+
+	private Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+	@GetMapping("/verif")
+	public String loginCheck(HttpServletResponse response, HttpServletRequest request, Model model) {
+		String jwtheader = request.getHeader("Authorization");
+		if (jwtheader != null && !"".equals(jwtheader)) {
+			String PAYLOAD = jwtheader.split("\\.")[1];
+			String base64Decode = Base64.decodebase(PAYLOAD);
+			JSONObject json = JSON.parseObject(base64Decode);
+			String iss = (String) json.get("iss");
+			Claims s = JWTHelper.parserTokens(jwtheader, MsaUtil.getSk(iss));
+			logger.info("JWTMessage:"+s.toString());
+		}
+		String returnUrl = request.getParameter("redirect_uri");
+		try {
+			returnUrl = StringUtils.isNotEmpty(returnUrl) ? zuulAdress+returnUrl : (zuulAdress + "/demo_b/main");
+			logger.info("-----redirect_uri is----:" + returnUrl);
+			response.sendRedirect(returnUrl);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+}

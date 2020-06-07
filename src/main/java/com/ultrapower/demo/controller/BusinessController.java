@@ -1,18 +1,15 @@
 package com.ultrapower.demo.controller;
 
 import org.apache.commons.lang3.StringUtils;
+import org.ehcache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ultrapower.demo.Service.EhcacheManagerService;
-import com.ultrapower.demo.Service.EhcacheService;
-import com.ultrapower.demo.config.JwtCache;
-import com.ultrapower.msa.sdk.jwt.JWTHelper;
+import com.ultrapower.demo.config.EhcacheUtil;
 
 @RestController
 public class BusinessController {
@@ -24,13 +21,11 @@ public class BusinessController {
 	private UltraMsaFeignClient ultraMsaFeignClient;
 	@Autowired
 	private NexusFeignClient nexusFeignClient;
-	@Autowired
-	@Qualifier("JWTCacheServiceImpl")
-	private EhcacheService<String> ehcacheService;
-	@Autowired
-	@Qualifier("JWTCacheManagerServiceImpl")
-	private EhcacheManagerService<String> ehcacheManagerService;
 
+	public Cache<String, String> jwtCache = EhcacheUtil.getJwtCache();
+
+	public static int n = 0;
+	
 	private String AK = "TSSO";
 
 	@RequestMapping("/hello/{username}")
@@ -44,17 +39,15 @@ public class BusinessController {
 	@ResponseBody
 	public String helloA(@PathVariable("username") String username) {
 		// 通过MSA获取访问 ultra-cmdb-b 服务的jwt
-		String receiveJwt = JwtCache.getCache(AK, "ultra-cmdb-b");
+		String receiveJwt = jwtCache.get(AK + "ultra-cmdb-b");
 		if (StringUtils.isBlank(receiveJwt)) {
-			// receiveJwt = ultraMsaFeignClient.receiveJwt("ultra-cmdb-b");
-			JWTHelper.createJWT("UCAS", 120 * 60 * 1000, "TSSO", "app", "TSSO", "TSSO",
-					"02d70ea1-a0de-4f39-a5dd-2d0d95110870");
-			JwtCache.putCache(AK, "ultra-cmdb-b", receiveJwt);
+			 receiveJwt = ultraMsaFeignClient.receiveJwt("ultra-cmdb-b");
+			jwtCache.put(AK + "ultra-cmdb-b", receiveJwt);
 		}
 		// 解析jwt
 		String jwt = JSONObject.parseObject(receiveJwt).getString("message");
 		// 获取 ultra-cmdb-b 接口数据
-		
+
 		return demoFeignClient.helloA(jwt, username);
 	}
 
@@ -70,16 +63,50 @@ public class BusinessController {
 	public String helloProject() {
 		// 同一应用下服务调用
 		projectFeignClient.helloA();
-		return ehcacheManagerService.findByName("11111");
+		return "";
 	}
-	
+
 	@RequestMapping("/helloNexus/{username}")
 	@ResponseBody
 	public String helloNexus(@PathVariable("username") String username) {
 		// 同一应用下服务调用
-		ehcacheManagerService.addPara("11111", "3333");
+		jwtCache.put("11111", "3333");
 		nexusFeignClient.helloA(username);
-		return ehcacheManagerService.findByName("11111");
+		return jwtCache.get("11111");
+	}
+
+	@RequestMapping("/testchcahe/key/{key}/value/{value}")
+	@ResponseBody
+	public String chcahe(@PathVariable("key") String key, @PathVariable("value") String value) throws RuntimeException {
+		// 存入第1条数据
+//		jwtCache.put(key, value);
+		// 取出并输出
+		n++;
+		System.out.println("----------");
+		System.out.println(n);
+		return value;
+	}
+	
+	@RequestMapping("/testchcahe")
+	@ResponseBody
+	public String chcahe1() {
+//		int a = Integer.valueOf("aaa");
+		n++;
+		System.out.println(n);
+		if(n % 3 != 0 ){
+			try {
+				Thread.sleep(7000l);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return "cache1";
+	}
+
+	@RequestMapping("/getchcahe/key/{key}")
+	@ResponseBody
+	public String getchcahe(@PathVariable("key") String key) {
+		return jwtCache.get(key);
 	}
 
 }

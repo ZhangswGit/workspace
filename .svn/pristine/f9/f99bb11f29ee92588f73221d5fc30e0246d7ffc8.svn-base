@@ -1,0 +1,8 @@
+com\ultrapower\demo\controller\MainController.class
+com\ultrapower\demo\utils\CookiesUtil.class
+com\ultrapower\demo\controller\LoginController.class
+com\ultrapower\demo\security\interceptor\LoginInterceptor.class
+com\ultrapower\demo\utils\JWTTest.class
+com\ultrapower\demo\UltraTestApplication.class
+com\ultrapower\demo\security\interceptor\LogConfig.class
+com\ultrapower\demo\utils\Test.class

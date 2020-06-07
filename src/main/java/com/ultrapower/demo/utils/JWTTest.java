@@ -1,6 +1,5 @@
 package com.ultrapower.demo.utils;
 
-import com.ultrapower.msa.sdk.util.MsaUtil;
 
 public class JWTTest {
 	
@@ -13,7 +12,7 @@ public class JWTTest {
 //		String sk = MsaUtil.getSk("DEMO_A");
 //		System.out.println(sk);
 //		MsaUtil.editSk("DEMO_A", "bca976b3-e330-44d7-8633-69d0ac5e0e22");
-		boolean addAk = MsaUtil.addAk("TSSO", "6abe9092-8f33-4688-b343-476d2f6da9ae");
+//		boolean addAk = MsaUtil.addAk("TSSO", "6abe9092-8f33-4688-b343-476d2f6da9ae");
 		
 	}
 

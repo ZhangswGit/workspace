@@ -1,0 +1,6 @@
+apollo:
+  meta: ${CONFIG_URLS}
+  bootstrap:
+    enabled: true
+    namespaces: ${NAME_SPACES}
+  

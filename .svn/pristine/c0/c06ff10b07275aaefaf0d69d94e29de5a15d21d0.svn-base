@@ -1,0 +1,24 @@
+server.context-path=/demo_b
+spring.application.name=demo_b
+server.port=8082
+logging.file=logs/test.log
+
+eureka.instance.metadataMap.description=demo_b\u63a5\u5165MSA
+eureka.instance.metadataMap.applicationName=TSSO\u7edf\u4e00\u767b\u5165\u767b\u51fa
+eureka.instance.metadataMap.applicationId=TSSO
+eureka.instance.metadataMap.serviceName=demo_b
+
+#freemarker
+spring.freemarker.suffix:.ftl
+spring.freemarker.content-type: text/html
+spring.freemarker.charset: UTF-8
+spring.freemarker.cache: false
+spring.freemarker.template-loader-path: classpath:/templates
+
+ultra.zuul.sign.appKey=ultrazuul
+ultra.zuul.sign.secret=ultrazuulSecret
+eureka.instance.instanceId=${spring.cloud.client.ipAddress}:${server.port}
+
+eureka.client.serviceUrl.defaultZone=http://${ultra.zuul.sign.appKey}:${ultra.zuul.sign.secret}@192.168.24.120:8070/eureka/
+
+zuul.adress=http://192.168.24.120:8060

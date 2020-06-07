@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.ultrapower.msa.sdk.jwt.JWTHelper;
-import com.ultrapower.msa.sdk.util.AESEncode_Decode_Util;
 
 import feign.Request;
 import feign.RequestInterceptor;
@@ -51,9 +49,9 @@ public class FeignInterceptor implements RequestInterceptor {
 			// 通过网关访问 生成全局JWT
 			String createJWT = "";
 			try {
-				createJWT = JWTHelper.createJWT(AK, expired_in, consumer, type, applicationId, applicationName, AESEncode_Decode_Util.aesDecryptDefault(SK));
+//				createJWT = JWTHelper.createJWT(AK, expired_in, consumer, type, applicationId, applicationName, AESEncode_Decode_Util.aesDecryptDefault(SK));
 			} catch (Exception e) {
-				createJWT = JWTHelper.createJWT(AK, expired_in, consumer, type, applicationId, applicationName, SK);
+//				createJWT = JWTHelper.createJWT(AK, expired_in, consumer, type, applicationId, applicationName, SK);
 			}
 			requestTemplate.header("Authorization", createJWT);
 		}

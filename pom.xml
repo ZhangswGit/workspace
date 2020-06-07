@@ -20,19 +20,6 @@
 		<spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
 	</properties>
 
-	<!-- <repositories> <repository> <id>ultra-pasm</id> <name>ultra-pasm</name> 
-		<url>http://192.168.106.95:57770/nexus/content/groups/ultra-pasm</url> <snapshots> 
-		<enabled>false</enabled> </snapshots> <releases> <enabled>true</enabled> 
-		</releases> </repository> <repository> <id>unicomdm-3rd</id> <name>unicomdm-3rd</name> 
-		<url>http://192.168.106.95:57770/nexus/content/repositories/unicomdm-3rd/</url> 
-		</repository> </repositories> -->
-	<repositories>
-		<repository>
-			<id>ultra-pasm</id>
-			<name>ultra-pasm</name>
-			<url>http://192.168.106.95:57770/nexus/content/groups/ultra-pasm</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -126,11 +113,6 @@
 			<version>1.2.60</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.ultrapower.msa</groupId>
-			<artifactId>ultra-msa-sdk</artifactId>
-			<version>1.1.5</version>
-		</dependency>
 		<!-- 支持缓存 -->
 		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -140,6 +122,17 @@
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
 			<version>3.8.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.9.2</version>
 		</dependency>
 
 	</dependencies>
