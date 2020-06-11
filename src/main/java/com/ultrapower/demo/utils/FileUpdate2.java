@@ -18,12 +18,14 @@ import org.springframework.util.ResourceUtils;
 public class FileUpdate2 {
 	public static void main(String[] args) {
 		try {
+			//关键字
+			String key = "DROP USER";
 			String fileName = "aggregate_min_ryh_08_01ng1-golden";
-			List<String> fileNames = fileNames();
+			List<String> fileNames = fileNames(key);
 			String path = File.separator + "Users" + File.separator + "bob" + File.separator + "Downloads" + File.separator
 					+ "QQ文件" + File.separator + fileName + ".csv";
 			String pathroot = File.separator + "Users" + File.separator + "bob" + File.separator + "Downloads" + File.separator
-					+ "QQ文件" + File.separator +  fileName + "new" + File.separator ;
+					+ "QQ文件" + File.separator +  "user" + File.separator ;
 			for (String filename : fileNames) {
 				copyFileUsingFileStreams(new File(path), new File(pathroot + filename));
 			}
@@ -33,7 +35,7 @@ public class FileUpdate2 {
 		}
 	}
 
-	public static List<String> fileNames() {
+	public static List<String> fileNames(String key) {
 		List<String> fileNames = new ArrayList<String>();
 		try {
 			// 定义一个数据格式化对象
@@ -59,6 +61,11 @@ public class FileUpdate2 {
 				if (row == null) {
 					break;
 				}
+				XSSFCell cell1 =  row.getCell(8);
+				String cellValue1 = cell1.getStringCellValue();
+				if(!cellValue1.contains(key)) {
+					continue;
+				}
 				XSSFCell cell = row.getCell(5);
 				// 读取单元格内容
 				String cellValue = cell.getStringCellValue();
@@ -67,6 +74,7 @@ public class FileUpdate2 {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("~~~~~~"+fileNames.size());
 		return fileNames;
 	}
 	
