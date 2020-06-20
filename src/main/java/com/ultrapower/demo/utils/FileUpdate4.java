@@ -1,16 +1,21 @@
 package com.ultrapower.demo.utils;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -18,41 +23,45 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.ResourceUtils;
 
-public class FileUpdate2 {
+public class FileUpdate4 {
 	public static void main(String[] args) {
 		try {
-			Map<String,String> fileNames = fileNames();
-			System.out.println(fileNames.size());
+			String path = File.separator + "Users" + File.separator + "bob" + File.separator + "Downloads"
+					+ File.separator + "UE文件" + File.separator + "3";
+			BufferedReader br = new BufferedReader(new FileReader(path));
+			List<String> list = new ArrayList<String>();
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				list.add(line);
+			}
+			br.close();
 			
-			File cfgFile = ResourceUtils.getFile(File.separator + "Users" + File.separator + "bob" + File.separator
-					+ "Downloads" + File.separator + "QQ文件" + File.separator + "编码格式golden_最新");
-			if(cfgFile.isDirectory()) {
-				String[] filelist = cfgFile.list();
-				for (String string : filelist) {
-					File cfgFile1 = ResourceUtils.getFile(File.separator + "Users" + File.separator + "bob" + File.separator
-							+ "Downloads" + File.separator + "QQ文件" + File.separator + "编码格式golden_最新" + File.separator + string);
-					for (Entry<String, String> entry : fileNames.entrySet()) {
-						if(string.contains(entry.getKey())) {
-							String end = string.split(entry.getKey())[1];
-							File newfile = ResourceUtils.getFile(File.separator + "Users" + File.separator + "bob" + File.separator
-									+ "Downloads" + File.separator + "QQ文件" + File.separator + "编码格式golden_new"  + File.separator + entry.getValue() + end);
-							copyFileUsingFileStreams(cfgFile1 , newfile);
-						}
-					}
+			
+			FileWriter fw=new FileWriter(new File(File.separator + "Users" + File.separator + "bob" + File.separator + "Downloads"
+					+ File.separator + "UE文件" + File.separator + "2"));
+	        //写入中文字符时会出现乱码
+	        BufferedWriter  bw=new BufferedWriter(fw);
+			
+			for(int i = 0; i <= 20; i ++) {
+				for (String string : list) {
+					String[] strs = string.split(" ");
+					String n = strs[0] + (i == 0 ? "" : "_" + i) + string.replace(strs[0], "");
+					bw.write(n+"\t\n");
 				}
 			}
-			
-			
-			
-			
-			
-		} catch (Exception e) {
+			bw.close();
+	        fw.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public static Map<String,String> fileNames() {
-		Map<String,String> fileNames = new HashMap<String,String>();
+	public static List<String> fileNames(String key) {
+		List<String> fileNames = new ArrayList<String>();
 		try {
 			// 定义一个数据格式化对象
 			XSSFWorkbook wb = null;
@@ -62,7 +71,7 @@ public class FileUpdate2 {
 //			File cfgFile = ResourceUtils.getFile("D:" + File.separator + "临时文件" + File.separator + "复制" + File.separator
 //					+ "0609" + File.separator + "XC-#9-支持GB18030编码格式-ryh-V1.1.xlsx");
 			File cfgFile = ResourceUtils.getFile(File.separator + "Users" + File.separator + "bob" + File.separator
-					+ "Downloads" + File.separator + "QQ文件" + File.separator + "01.xlsx");
+					+ "Downloads" + File.separator + "QQ文件" + File.separator + "XC-#9-支持GB18030编码格式-ryh-V1.1.xlsx");
 			InputStream in = new FileInputStream(cfgFile);
 			// 读取excel模板
 			wb = new XSSFWorkbook(in);
@@ -76,25 +85,20 @@ public class FileUpdate2 {
 				if (row == null) {
 					break;
 				}
-//				XSSFCell cell1 =  row.getCell(8);
-//				String cellValue1 = cell1.getStringCellValue();
-				XSSFCell cellkey = row.getCell(0);
-				XSSFCell cellvalue = row.getCell(1);
-
-				if (cellkey == null || cellvalue == null) {
-					break;
+				XSSFCell cell1 = row.getCell(8);
+				String cellValue1 = cell1.getStringCellValue();
+				if (!cellValue1.contains(key)) {
+					continue;
 				}
+				XSSFCell cell = row.getCell(5);
 				// 读取单元格内容
-				String key = cellkey.getStringCellValue();
-				String value = cellvalue.getStringCellValue();
-
-//				System.out.println("~~~~~~" + cellValue);
-				fileNames.put(key, value);
+				String cellValue = cell.getStringCellValue();
+				fileNames.add(cellValue + "ng2-golden" + ".csv");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//		System.out.println("~~~~~~" + fileNames.size());
+		System.out.println("~~~~~~" + fileNames.size());
 		return fileNames;
 	}
 
